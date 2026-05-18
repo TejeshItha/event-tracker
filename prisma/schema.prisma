@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // directUrl is needed by Supabase to bypass the connection pooler for migrations.
+  // Omit if using Railway, Render, or a direct Postgres connection.
+  directUrl = env("DIRECT_URL")
+}
+
+// External events the company attends as a sponsor / exhibitor
+model ExternalEvent {
+  id   String @id
+  data Json
+
+  @@map("external_events")
+}
+
+// Hosted / internal events the company organises (webinars, roundtables, etc.)
+model InternalEvent {
+  id   String @id
+  data Json
+
+  @@map("internal_events")
+}
+
+// Single-row settings store (always id = 1)
+model AppSettings {
+  id   Int  @id @default(1)
+  data Json
+
+  @@map("app_settings")
+}
