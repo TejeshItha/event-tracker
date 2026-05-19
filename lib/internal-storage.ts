@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import type { InternalEvent as PrismaInternalEvent } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import {
   InternalEvent,
@@ -12,7 +13,7 @@ import {
 
 export async function readInternalEvents(): Promise<InternalEvent[]> {
   const rows = await prisma.internalEvent.findMany();
-  return rows.map((r) => r.data as unknown as InternalEvent);
+  return rows.map((r: PrismaInternalEvent) => r.data as unknown as InternalEvent);
 }
 
 export async function readInternalEvent(id: string): Promise<InternalEvent | null> {

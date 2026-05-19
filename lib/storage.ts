@@ -1,11 +1,12 @@
 import { prisma } from './prisma';
+import type { ExternalEvent as PrismaExternalEvent } from '@prisma/client';
 import { Event, AppSettings, DEFAULT_SETTINGS } from './types';
 
 // ─── External Events ───────────────────────────────────────────────────────────
 
 export async function readEvents(): Promise<Event[]> {
   const rows = await prisma.externalEvent.findMany();
-  return rows.map((r) => r.data as unknown as Event);
+  return rows.map((r: PrismaExternalEvent) => r.data as unknown as Event);
 }
 
 export async function readEvent(id: string): Promise<Event | null> {
