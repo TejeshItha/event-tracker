@@ -11,8 +11,25 @@
 import fs from 'fs';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
-const prisma = new PrismaClient();
+// Load .env.local so DATABASE_URL is available when running via tsx
+try {
+  const envPath = path.join(process.cwd(), '.env.local');
+  if (fs.existsSync(envPath)) {
+    for (const line of fs.readFileSync(envPath, 'utf-8').split('\n')) {
+      const m = line.match(/^([^=#\s][^=]*)=(.*)/);
+      if (m && !process.env[m[1].trim()]) process.env[m[1].trim()] = m[2].trim();
+    }
+  }
+} catch {}
+
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter } as never);
 
 async function main() {
   const dataDir = path.join(process.cwd(), 'data');

@@ -3,11 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  // directUrl is needed by Supabase to bypass the connection pooler for migrations.
-  // Omit if using Railway, Render, or a direct Postgres connection.
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 // External events the company attends as a sponsor / exhibitor

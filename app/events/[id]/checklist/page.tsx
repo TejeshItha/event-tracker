@@ -6,7 +6,7 @@ import ChecklistClient from '@/components/events/ChecklistClient';
 
 export default async function ChecklistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = readEvent(id);
+  const event = await readEvent(id);
   if (!event) notFound();
 
   const preItems = event.checklist?.filter((c) => c.phase === 'pre-event') || [];
