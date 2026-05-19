@@ -1,5 +1,6 @@
 import { prisma } from './prisma';
-import type { InternalEvent as PrismaInternalEvent } from '@prisma/client';
+
+type PrismaRow = { id: string; data: unknown };
 import { v4 as uuidv4 } from 'uuid';
 import {
   InternalEvent,
@@ -13,7 +14,7 @@ import {
 
 export async function readInternalEvents(): Promise<InternalEvent[]> {
   const rows = await prisma.internalEvent.findMany();
-  return rows.map((r: PrismaInternalEvent) => r.data as unknown as InternalEvent);
+  return rows.map((r: PrismaRow) => r.data as unknown as InternalEvent);
 }
 
 export async function readInternalEvent(id: string): Promise<InternalEvent | null> {
@@ -67,18 +68,17 @@ export async function createInternalEvent(data: Partial<InternalEvent>): Promise
     targetIndustries: [],
     estimatedAudienceSize: 0,
     stage: 'ideation',
-    budget,
     speakers: [],
     targetMetrics: {
       targetInvites: 0, targetRegistrations: 0, targetAttendees: 0,
       targetIcpAttendees: 0, targetMeetings: 0, targetPipeline: 0,
       targetContentAssets: 0, targetSocialPosts: 0,
     },
-    checklist,
     createdAt: now,
     updatedAt: now,
     notes: '',
     ...data,
+    // Always use computed values — overrides anything spread from `data`
     budget,
     checklist,
   };
